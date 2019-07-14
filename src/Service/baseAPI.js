@@ -41,16 +41,16 @@ export default {
     return executeRequest('get', pathname, null, headers, options);
   },
 
-  post(pathname, data, options) {
-    return executeRequest('post', pathname, data, options);
+  post(pathname, data, headers) {
+    return executeRequest('post', pathname, data, headers);
   },
 
-  put(pathname, data, options) {
-    return executeRequest('put', pathname, data, options);
+  put(pathname, data, headers) {
+    return executeRequest('put', pathname, data, headers);
   },
 
-  delete(pathname, data, options) {
-    return executeRequest('delete', pathname, data, options);
+  delete(pathname, data, headers) {
+    return executeRequest('delete', pathname, data, headers);
   },
 
   all(promises) {

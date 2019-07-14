@@ -6,7 +6,8 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {
@@ -14,7 +15,8 @@ import {
   widthPercentageToDP as wp
 } from 'react-native-responsive-screen';
 import { connect } from 'react-redux';
-import * as Actions from '../Reducers/loginReducer';
+import * as LoginActions from '../Reducers/loginReducer';
+import * as VehiclesActions from '../Reducers/vehiclesDataReducer';
 
 class InitailHome extends React.Component {
   static navigationOptions = {
@@ -27,9 +29,28 @@ class InitailHome extends React.Component {
     keep: false
   };
 
+  componentDidMount() {
+    this.keepLoggedInHandler();
+  }
+
+  async keepLoggedInHandler() {
+    try {
+      const { vehiclesGetData, navigation, keepLoggedIn } = this.props;
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
+      if (token) {
+        keepLoggedIn(token);
+        vehiclesGetData(token);
+        navigation.navigate('CarList');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   componentDidUpdate() {
-    const { data, navigation } = this.props;
-    if (data !== null) {
+    const { data, navigation, login } = this.props;
+    if (login) {
       navigation.navigate('CarList', { data });
     }
   }
@@ -52,18 +73,20 @@ class InitailHome extends React.Component {
   };
 
   getData = () => {
-    const { userId, password, deviceType } = this.state;
+    const { userId, password, deviceType, keep } = this.state;
     const { isLogin } = this.props;
     const userData = {
       userId,
       password,
-      deviceType
+      deviceType,
+      keep
     };
 
     isLogin(userData);
   };
 
   render() {
+    console.log(this.props.data);
     return (
       <View style={Style.container}>
         <View style={Style.topBlanck} />
@@ -111,12 +134,15 @@ class InitailHome extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  data: state.login.data,
-  token: state.login.token
+  data: state.vehiclesData.data,
+  token: state.login.token,
+  login: state.login.success
 });
 
 const mapDispatchToProps = dispatch => ({
-  isLogin: data => dispatch(Actions.login(data))
+  isLogin: data => dispatch(LoginActions.login(data)),
+  vehiclesGetData: token => dispatch(VehiclesActions.fetchRequest(token)),
+  keepLoggedIn: token => dispatch(LoginActions.loginSuccess(token))
 });
 
 const Style = StyleSheet.create({
