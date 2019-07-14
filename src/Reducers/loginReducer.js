@@ -1,14 +1,16 @@
 import { createAction, handleActions } from 'redux-actions';
 
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_FAILD = 'LOGIN_FAILD';
 
 export const login = createAction(LOGIN);
 export const loginSuccess = createAction(LOGIN_SUCCESS);
 export const loginFaild = createAction(LOGIN_FAILD);
+export const logout = createAction(LOGOUT);
 
-initialState = {
+const initialState = {
   token: null,
   error: false,
   isFetching: false,
@@ -28,6 +30,11 @@ export default handleActions(
       ...state,
       isFetching: false,
       error: true,
+      success: false
+    }),
+    [LOGOUT]: state => ({
+      ...state,
+      token: null,
       success: false
     })
   },

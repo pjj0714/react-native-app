@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import InitialHome from './src/component/InitailHome';
+import InitialHome from './src/component/InitialHome';
 import CarList from './src/component/CarList';
 import { Provider } from 'react-redux';
 import configureStore from './src/Store';

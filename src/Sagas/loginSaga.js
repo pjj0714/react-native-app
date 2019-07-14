@@ -1,7 +1,7 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
 import API from '../Service/baseAPI';
 import * as Actions from '../Reducers/loginReducer';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Alert } from 'react-native';
 import { getData } from './vehiclesDataSaga';
 
 async function storeToken(token) {
@@ -9,6 +9,14 @@ async function storeToken(token) {
     await AsyncStorage.setItem('token', token);
   } catch (error) {
     console.log('AsyncStorage error during token store:', error);
+  }
+}
+
+async function removeToken() {
+  try {
+    await AsyncStorage.removeItem('token');
+  } catch (e) {
+    console.log('removeToken Error : ', e);
   }
 }
 
@@ -21,18 +29,28 @@ function* isLogin(action) {
       deviceType
     };
     const toeknResponse = yield call(API.post, '/auth', user);
-
-    console.log('ttt : ', toeknResponse);
     if (keep) yield call(storeToken, toeknResponse.data.token);
 
-    yield call(getData, toeknResponse.data.token);
     yield put(Actions.loginSuccess(toeknResponse.data.token));
+    yield call(getData, toeknResponse.data.token);
   } catch (e) {
-    console.log('errpr : ', e);
+    Alert.alert('회원 정보를 확인해주세요');
     yield put(Actions.loginFaild());
   }
 }
 
+function* logout() {
+  try {
+    yield call(removeToken);
+    yield put(Actions.logout());
+  } catch (e) {
+    console.log('logout err : ', e);
+  }
+}
+
 export default function* root() {
-  yield [yield takeLatest(Actions.LOGIN, isLogin)];
+  yield [
+    yield takeLatest(Actions.LOGIN, isLogin),
+    yield takeLatest(Actions.LOGOUT, logout)
+  ];
 }

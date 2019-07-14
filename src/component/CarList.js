@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { View, ScrollView, ActivityIndicator } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import CarListDetail from './CarListDetail';
 import { connect } from 'react-redux';
-
+import CarListDetail from './CarListDetail';
+import SideMenu from './SideMenu';
 class CarList extends React.Component {
   static navigationOptions = {
     header: null
@@ -12,6 +12,21 @@ class CarList extends React.Component {
   state = {
     q: ''
   };
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const vitalPropsChange = this.props.login !== nextProps.login;
+  //   return vitalPropsChange;
+  // }
+  // componentDidMount() {
+  //   const { navigation, token, login } = this.props;
+
+  //   if (token === null && !login) {
+  //     console.log(1);
+  //     navigation.navigate('InitialHome');
+  //   }
+  //   console.log('tttttttttttt: ', token);
+  //   console.log('llllllllllll: ', login);
+  // }
 
   render() {
     const { data } = this.props;
@@ -59,7 +74,9 @@ class CarList extends React.Component {
             showsVerticalScrollIndicator={false}>
             {renderList}
           </ScrollView>
-          <Text style={{ flex: 0.1, backgroundColor: '#00bc45' }}>Blank</Text>
+          <View style={{ flex: 0.1, backgroundColor: '#00bc45' }}>
+            <SideMenu />
+          </View>
         </View>
       );
     }
@@ -72,4 +89,8 @@ class CarList extends React.Component {
   }
 }
 
-export default connect(state => ({ data: state.vehiclesData.data }))(CarList);
+export default connect(state => ({
+  data: state.vehiclesData.data,
+  token: state.login.token,
+  login: state.login.success
+}))(CarList);

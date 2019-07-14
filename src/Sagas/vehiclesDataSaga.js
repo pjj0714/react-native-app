@@ -9,7 +9,6 @@ export function* getData(action) {
   };
   try {
     const response = yield call(API.get, '/users/self/vehicles', header);
-    console.log('response : ', response);
     yield put(vehiclesActions.fetchRequestSuccess(response.data));
   } catch (e) {
     console.log('e, : ', e);

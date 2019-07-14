@@ -4,6 +4,41 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import * as FavoriteActions from '../Reducers/favoriteReducer';
 
+// class CarListDetail extends React.Component {
+//   // componentDidMount() {
+//   //   console.log('wqiodjoqwijdioqjd :', this.props.token);
+//   // }
+
+//   onPressIcon = () => {
+//     const { favorite, token, id, idx, favoritePutApi } = this.props;
+//     const status = !favorite;
+//     const data = { status, token, id, idx };
+//     favoritePutApi(data);
+//   };
+//   render() {
+//     const { capacity, favorite, description, licenseNumber } = this.props;
+//     return (
+//       <View style={Style.container}>
+//         <View style={Style.textContainer}>
+//           <Text style={Style.textDecription}>{description}</Text>
+//           <Text style={Style.textLicenseNum}>{licenseNumber}</Text>
+//           <View style={Style.iconContiner}>
+//             <Icon
+//               name="star"
+//               size={16}
+//               color={favorite ? '#00bc45' : 'black'}
+//               onPress={this.onPressIcon}
+//             />
+//             <Text style={Style.textCapacity}>
+//               적재용량 : {`${capacity / 1000}t`}
+//             </Text>
+//           </View>
+//         </View>
+//       </View>
+//     );
+//   }
+// }
+
 const CarListDetail = ({
   capacity,
   favorite,

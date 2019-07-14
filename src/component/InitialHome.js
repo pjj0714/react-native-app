@@ -7,7 +7,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {
@@ -35,9 +36,8 @@ class InitailHome extends React.Component {
 
   async keepLoggedInHandler() {
     try {
-      const { vehiclesGetData, navigation, keepLoggedIn } = this.props;
+      const { vehiclesGetData, navigation, keepLoggedIn, login } = this.props;
       const token = await AsyncStorage.getItem('token');
-      console.log(token);
       if (token) {
         keepLoggedIn(token);
         vehiclesGetData(token);
@@ -49,9 +49,11 @@ class InitailHome extends React.Component {
   }
 
   componentDidUpdate() {
-    const { data, navigation, login } = this.props;
+    const { navigation, login } = this.props;
+    console.log(login);
+
     if (login) {
-      navigation.navigate('CarList', { data });
+      navigation.navigate('CarList', { login });
     }
   }
 
@@ -72,7 +74,7 @@ class InitailHome extends React.Component {
     });
   };
 
-  getData = () => {
+  onPressLoginBtn = () => {
     const { userId, password, deviceType, keep } = this.state;
     const { isLogin } = this.props;
     const userData = {
@@ -86,7 +88,6 @@ class InitailHome extends React.Component {
   };
 
   render() {
-    console.log(this.props.data);
     return (
       <View style={Style.container}>
         <View style={Style.topBlanck} />
@@ -121,7 +122,9 @@ class InitailHome extends React.Component {
           </View>
         </KeyboardAvoidingView>
         <View style={Style.btnContainer}>
-          <TouchableOpacity style={Style.loginBtn} onPress={this.getData}>
+          <TouchableOpacity
+            style={Style.loginBtn}
+            onPress={this.onPressLoginBtn}>
             <Text style={Style.loginBtnText}>로그인</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Style.passwordBtn}>
@@ -132,18 +135,6 @@ class InitailHome extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  data: state.vehiclesData.data,
-  token: state.login.token,
-  login: state.login.success
-});
-
-const mapDispatchToProps = dispatch => ({
-  isLogin: data => dispatch(LoginActions.login(data)),
-  vehiclesGetData: token => dispatch(VehiclesActions.fetchRequest(token)),
-  keepLoggedIn: token => dispatch(LoginActions.loginSuccess(token))
-});
 
 const Style = StyleSheet.create({
   container: {
@@ -207,6 +198,18 @@ const Style = StyleSheet.create({
     fontSize: 16,
     alignSelf: 'center'
   }
+});
+
+const mapStateToProps = state => ({
+  data: state.vehiclesData.data,
+  token: state.login.token,
+  login: state.login.success
+});
+
+const mapDispatchToProps = dispatch => ({
+  isLogin: data => dispatch(LoginActions.login(data)),
+  vehiclesGetData: token => dispatch(VehiclesActions.fetchRequest(token)),
+  keepLoggedIn: token => dispatch(LoginActions.loginSuccess(token))
 });
 
 export default connect(
