@@ -1,9 +1,9 @@
-import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions } from "redux-actions";
 
-export const LOGIN = 'LOGIN';
-export const LOGOUT = 'LOGOUT';
-const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const LOGIN_FAILD = 'LOGIN_FAILD';
+export const LOGIN = "LOGIN";
+export const LOGOUT = "LOGOUT";
+const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+const LOGIN_FAILD = "LOGIN_FAILD";
 
 export const login = createAction(LOGIN);
 export const loginSuccess = createAction(LOGIN_SUCCESS);
@@ -14,7 +14,7 @@ const initialState = {
   token: null,
   error: false,
   isFetching: false,
-  success: false
+  success: false,
 };
 
 export default handleActions(
@@ -24,19 +24,19 @@ export default handleActions(
       ...state,
       token: action.payload,
       isFetching: false,
-      success: true
+      success: true,
     }),
     [LOGIN_FAILD]: state => ({
       ...state,
       isFetching: false,
       error: true,
-      success: false
+      success: false,
     }),
     [LOGOUT]: state => ({
       ...state,
       token: null,
-      success: false
-    })
+      success: false,
+    }),
   },
-  initialState
+  initialState,
 );

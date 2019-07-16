@@ -1,12 +1,16 @@
-import React from 'react';
-
-import { View } from 'react-native';
-import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
-import Icon from 'react-native-vector-icons/Feather';
-import { connect } from 'react-redux';
-import * as AuthActions from '../Reducers/loginReducer';
+import React from "react";
+import { View } from "react-native";
+import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
+import Icon from "react-native-vector-icons/Feather";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import * as AuthActions from "../Reducers/loginReducer";
 
 class SideMenu extends React.PureComponent {
+  static propTypes = {
+    logoutHandler: PropTypes.func.isRequired,
+  };
+
   _menu = null;
 
   setMenuRef = ref => {
@@ -14,7 +18,8 @@ class SideMenu extends React.PureComponent {
   };
 
   hideMenu = () => {
-    this.props.logoutHandler();
+    const { logoutHandler } = this.props;
+    logoutHandler();
     this._menu.hide();
   };
 
@@ -27,7 +32,7 @@ class SideMenu extends React.PureComponent {
       <View>
         <Menu
           ref={this.setMenuRef}
-          button={
+          button={(
             <Icon
               name="menu"
               size={24}
@@ -35,7 +40,8 @@ class SideMenu extends React.PureComponent {
               style={{ margin: 16 }}
               onPress={this.showMenu}
             />
-          }>
+)}
+        >
           <MenuItem onPress={this.hideMenu}>Logout</MenuItem>
           <MenuItem onPress={this.hideMenu}>Menu item 2</MenuItem>
 
@@ -49,5 +55,5 @@ class SideMenu extends React.PureComponent {
 
 export default connect(
   null,
-  dispatch => ({ logoutHandler: () => dispatch(AuthActions.logout()) })
+  dispatch => ({ logoutHandler: () => dispatch(AuthActions.logout()) }),
 )(SideMenu);

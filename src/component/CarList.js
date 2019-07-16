@@ -1,96 +1,112 @@
-import React from 'react';
-import { View, ScrollView, ActivityIndicator } from 'react-native';
-import { SearchBar } from 'react-native-elements';
-import { connect } from 'react-redux';
-import CarListDetail from './CarListDetail';
-import SideMenu from './SideMenu';
+import React from "react";
+import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { SearchBar } from "react-native-elements";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import CarListDetail from "./CarListDetail";
+import SideMenu from "./SideMenu";
+
+const Style = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  searchContainer: {
+    flex: 0.1,
+  },
+  searchBorder: {
+    marginTop: 24,
+    backgroundColor: "#ffffff",
+    borderTopWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: "#666666",
+  },
+  searchInput: {
+    backgroundColor: "#ffffff",
+  },
+  scrollContainer: {
+    flex: 0.8,
+  },
+  bottom: {
+    flex: 0.1,
+    backgroundColor: "#00bc45",
+  },
+  loding: {
+    flex: 1,
+    justifyContent: "center",
+  },
+});
+
 class CarList extends React.Component {
   static navigationOptions = {
-    header: null
+    header: null,
   };
 
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }).isRequired,
+    login: PropTypes.bool.isRequired,
+  };
   state = {
-    q: ''
+    q: "",
   };
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const vitalPropsChange = this.props.login !== nextProps.login;
-  //   return vitalPropsChange;
-  // }
-  // componentDidMount() {
-  //   const { navigation, token, login } = this.props;
-
-  //   if (token === null && !login) {
-  //     console.log(1);
-  //     navigation.navigate('InitialHome');
-  //   }
-  //   console.log('tttttttttttt: ', token);
-  //   console.log('llllllllllll: ', login);
-  // }
+  componentDidUpdate() {
+    const { navigation, token, login } = this.props;
+    if (token === null && !login) {
+      navigation.navigate("InitialHome");
+    }
+  }
 
   render() {
-    const { data } = this.props;
-    if (data) {
+    const { q } = this.state;
+    const { data, login } = this.props;
+    if (data && login) {
       const renderList = data
-        .sort((a, b) => {
+        .sort(a => {
           if (a.favorite) return -1;
         })
-        .map((el, idx) => {
-          return (
-            <CarListDetail
-              key={idx}
-              id={el.vehicleIdx}
-              idx={idx}
-              description={el.description}
-              capacity={el.capacity}
-              licenseNumber={el.licenseNumber}
-              favorite={el.favorite}
-            />
-          );
-        });
+        .map((el, idx) => (
+          <CarListDetail
+            key={idx}
+            id={el.vehicleIdx}
+            idx={idx}
+            description={el.description}
+            capacity={el.capacity}
+            licenseNumber={el.licenseNumber}
+            favorite={el.favorite}
+          />
+        ));
       return (
-        <View style={{ flex: 1 }}>
+        <View style={Style.container}>
           <SearchBar
-            style={{ flex: 0.1 }}
-            containerStyle={{
-              marginTop: 24,
-              backgroundColor: '#ffffff',
-              borderBottomWidth: 1,
-              borderBottomColor: 'black'
-            }}
-            inputContainerStyle={{ backgroundColor: '#ffffff' }}
-            icon={{
-              type: 'font-awesome',
-              name: 'search',
-              style: { color: '#00bc45' }
-            }}
+            style={Style.searchContainer}
+            containerStyle={Style.searchBorder}
+            inputContainerStyle={Style.searchInput}
+            searchIcon={{ size: 24, color: "#00ac3c" }}
             placeholder="차량 정보를 검색하세요"
-            placeholderTextColor="gray"
+            placeholderTextColor="#b2b2b2"
             onChangeText={q => this.setState({ q })}
-            value={this.state.q}
+            value={q}
           />
           <ScrollView
-            style={{ flex: 0.8 }}
-            showsVerticalScrollIndicator={false}>
+            style={Style.scrollContainer}
+            showsVerticalScrollIndicator={false}
+          >
             {renderList}
           </ScrollView>
-          <View style={{ flex: 0.1, backgroundColor: '#00bc45' }}>
+          <View style={Style.bottom}>
             <SideMenu />
           </View>
         </View>
       );
     }
-    return (
-      <ActivityIndicator
-        size="large"
-        style={{ flex: 1, justifyContent: 'center' }}
-      />
-    );
+    return <ActivityIndicator size="large" style={Style.loding} />;
   }
 }
 
 export default connect(state => ({
   data: state.vehiclesData.data,
   token: state.login.token,
-  login: state.login.success
+  login: state.login.success,
 }))(CarList);
